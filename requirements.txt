@@ -1,0 +1,3 @@
+python-telegram-bot
+requests
+python-dotenv # Для локальной разработки с .env файлом (не обязательно для Heroku)
