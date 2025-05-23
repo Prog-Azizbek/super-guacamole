@@ -20,6 +20,8 @@ logger = logging.getLogger(__name__)
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
 GOOGLE_CSE_ID = os.environ.get("GOOGLE_CSE_ID")
+IS_BOT_ENABLED_STR = os.environ.get("BOT_ENABLED", "true").lower() # По умолчанию включен
+IS_BOT_ENABLED = IS_BOT_ENABLED_STR == "true"
 
 # Railway предоставляет порт через переменную окружения PORT
 PORT = int(os.environ.get('PORT', '8443')) # 8443 - запасной вариант, если PORT не установлен (маловероятно на Railway)
@@ -140,6 +142,9 @@ async def error_handler(update: object, context: CallbackContext) -> None:
 
 # === ОСНОВНАЯ ФУНКЦИЯ ЗАПУСКА БОТА (main) ===
 def main() -> None:
+    if not IS_BOT_ENABLED:
+        logger.info("Бот отключен через переменную окружения BOT_ENABLED. Завершение работы.")
+        return
     # Проверка наличия всех необходимых токенов
     if not all([TELEGRAM_BOT_TOKEN, GOOGLE_API_KEY, GOOGLE_CSE_ID]):
         logger.critical("КРИТИЧЕСКАЯ ОШИБКА: Не установлены одна или несколько обязательных переменных окружения: TELEGRAM_BOT_TOKEN, GOOGLE_API_KEY, GOOGLE_CSE_ID.")
